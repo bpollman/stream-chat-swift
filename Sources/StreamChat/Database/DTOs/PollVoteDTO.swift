@@ -152,9 +152,9 @@ extension NSManagedObjectContext {
             let queryDTO = try saveQuery(query: query)
             queryDTO?.votes.insert(dto)
             // NSFetchedResultsController doesn't detect inverse relationship changes.
-            // Trigger KVO manually so the FRC re-evaluates its predicate for this vote.
-            dto.willChangeValue(for: \.updatedAt)
-            dto.didChangeValue(for: \.updatedAt)
+            // Mark the object as modified so the FRC re-evaluates its predicate.
+            // Same pattern as PollVoteDTO.willSave() and PollDTO.willSave().
+            dto.id = dto.id
         }
 
         return dto
